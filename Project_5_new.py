@@ -6,6 +6,7 @@ Created on Sun Mar 27 15:51:03 2022
 """
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
@@ -40,7 +41,7 @@ else:
   apache3_hospital.sort_values(by="number of hospitals",inplace=True) 
     
   st.header("The total of hospital per apache_3j_bodysystem")
-  fig2 = plt.figure(figsize=(12,10))   
+  fig2 = plt.figure(figsize=(12,15))   
   st.bar_chart(apache3_hospital)
     
     
@@ -53,7 +54,21 @@ else:
   st.pyplot(fig3)
     
     
-    
+    #Survival rate by age group for each gender
+  tumor=patients.loc[patients.solid_tumor_with_metastasis==1]
+  tumor.sort_values(by="age",inplace=True)
+  tumor_age=tumor[["group_age","patient_id","gender","survival"]].groupby(["group_age","gender"]).agg({'patient_id':'count','survival':'sum'})
+  tumor_age.reset_index(inplace=True)
+  tumor_age["survival_rate"]=tumor_age["survival"]/tumor_age["patient_id"]
+  gender_select = st.sidebar.selectbox(label="Please select your gender",options=['M','F'])
+  fig12=plt.figure(figsize=(8,6))
+  plt.plot(tumor_age.loc[tumor_age.gender==gender_select]['survival_rate'])
+  plt.title("Tumor survival rate - Selected Gender is {}".format(gender_select))
+  plt.xticks(np.arange(0,15,2),['10-20','20-30','30-40','40-50','50-60','60-70','70-80','80-90'])
+  plt.xlabel("group_age")
+  plt.ylabel("survival_rate")
+  st.pyplot(fig12)
+
     
     #Pie Chart per hospital 
     
