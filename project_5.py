@@ -18,37 +18,44 @@ st.set_page_config(layout="wide")
 
 st.write("Welcome to our Dashboard - Patients Survivals Dataset")
 
-patients = pd.read_csv(r'C:\Users\gixi_\Downloads\ironhack data export/patients.csv')
+uploaded_file= st.file_uploader("Choose a file")
+if uploaded_file is None:
+  st.write("Please upload the file")
+  
+else:
+  patients = pd.read_csv(uploaded_file)
+  patients.drop(['Unnamed: 0'], axis = 1, inplace = True)
+  st.write(patients)
+#patients = pd.read_csv(r'C:\Users\gixi_\Downloads\ironhack data export/patients.csv')
 
-
-st.write(patients)
 
 
 #Gender and Age Distribution by Box Plot
-fig5 = plt.figure(figsize=(12,6))
-sns.boxplot(x='age',y='gender',data=patients).set(title ="Gender and Age Distribution")
-st.pyplot(fig5)
-
-   
-        
+fig1 = plt.figure(figsize=(12,6))
+sns.boxplot(x='age',y='gender',data = patients).set(title ="Gender and Age Distribution")
+    
+    
+       
+            
 #The total of hospital per apache_3j_bodysystem
-
+    
 apache3_hospital=patients[['apache_3j_bodysystem','hospital_id']].groupby('apache_3j_bodysystem').agg({'hospital_id':'count'})
 apache3_hospital.rename({'hospital_id': 'number of hospitals'}, axis=1, inplace=True)
 apache3_hospital.sort_values(by="number of hospitals",inplace=True) 
 
 st.header("The total of hospital per apache_3j_bodysystem")
-plt.figure(figsize=(20,10))   
+fig2 = plt.figure(figsize=(20,10))   
 st.bar_chart(apache3_hospital)
 
 
 
 #Age histogram
 
-hist_age = sns.displot(patients['age']).set(title ="Distribution of patients'ages")
+fig3 = sns.displot(patients['age']).set(title ="Distribution of patients'ages")
 plt.figure(figsize=(8,6))
-hist_age.set( xlabel = "Age", ylabel = "Frequencies")
-st.pyplot(hist_age)
+fig3.set( xlabel = "Age", ylabel = "Frequencies")
+st.pyplot(fig3)
+
 
 
 
@@ -68,16 +75,17 @@ b1 = b[['Accident & Emergency','Floor','Operating Room / Recovery','Other Hospit
 b1 = b1.reset_index()[['Accident & Emergency','Floor','Operating Room / Recovery','Other Hospital','Other ICU']].transpose()
 b1.rename({0: 'quantities'}, axis=1, inplace=True)
 b1.reset_index(inplace = True)
-b1
+
 
 labels = b1['icu_admit_source']
 sizes =b1['quantities']
 explode = (0, 0.1, 0, 0, 0)
-fig1, ax1 = plt.subplots()
-ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+fig4, ax4 = plt.subplots()
+ax4.title.set_text('Different ICU Admit Sources Per Hospital_ID')
+ax4.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=40)
-ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-st.pyplot(fig1,height=300)
+ax4.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
 
 
 #gender per disease
@@ -85,10 +93,19 @@ st.pyplot(fig1,height=300)
 diseases = patients[['gender','aids','cirrhosis','diabetes_mellitus','hepatic_failure','immunosuppression','leukemia','lymphoma','solid_tumor_with_metastasis']]
 diseases = diseases.groupby('gender').sum().transpose()
 
-fig = px.bar(diseases, x=diseases.index, y=['F', 'M'], barmode='group', title ="Number of patient per disease per gender")
-fig.update_yaxes(title_text='Number of patient')
-fig.update_xaxes(title_text="Diseases")
-st.plotly_chart(fig)
+fig5 = px.bar(diseases, x=diseases.index, y=['F', 'M'], barmode='group', title ="Number of patients per disease per gender")
+fig5.update_yaxes(title_text='Number of patient')
+fig5.update_xaxes(title_text="Diseases")
+
+
+
+#Diabetes_mellitus by gender
+diabetics=patients[['gender','diabetes_mellitus']].groupby('gender').agg({'diabetes_mellitus':'count'})
+
+st.header("Diabetics by gender")
+plt.figure(figsize=(20,10))   
+
+
 
 #disease per ethicinity
 st.sidebar.markdown("### Charts: Different Diseases per Ethnictity : ")
@@ -119,11 +136,12 @@ b3.reset_index(inplace = True)
 labels = b3['index']
 sizes = b3[bar_axis1]
 explode = (0, 0.1, 0, 0, 0,0,0,0)
-fig2, ax2 = plt.subplots()
-ax2.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+fig6, ax6 = plt.subplots()
+ax6.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=40)
-ax2.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-st.pyplot(fig2,height=300)
+ax6.title.set_text('Different Diseases per Ethnictity')
+ax6.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
 
 
 
@@ -146,21 +164,21 @@ b5 = b4[['Healthy Weight','Obesity','Overweight','Underweight']]
 b5 = b5.reset_index()[['Healthy Weight','Obesity','Overweight','Underweight']].transpose()
 b5.rename({0: bar_axis2}, axis=1, inplace=True)
 b5.reset_index(inplace = True)
-b5
 
 labels = b5['bmi_classification']
 sizes = b5[bar_axis2]
 explode = (0, 0.1, 0, 0)
-fig3, ax3 = plt.subplots()
-ax3.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+fig7, ax7 = plt.subplots()
+ax7.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=40)
-ax3.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-st.pyplot(fig3,height=200)
+ax7.title.set_text('DifferentB BMI Classifications of patients per Diseases')
+ax7.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
 
 
 #BMI Distribution per gender
 
-fig4, ax4 = plt.subplots()
+fig8, ax8 = plt.subplots()
 sns.distplot(patients[(patients['gender']=='F')&(patients['diabetes_mellitus']==1)]['bmi'],  kde=False, label='Female BMI')
 sns.distplot(patients[(patients['gender']=='M')&(patients['diabetes_mellitus']==1)]['bmi'],  kde=False, label='Male BMI')
 
@@ -168,12 +186,12 @@ plt.title('Comparing the bmi distribution between the males and gemales')
 plt.xlabel('BMI')
 plt.ylabel('Density')
 plt.legend()
-st.pyplot(fig4)
+
 
 #Correlation
 
-heatmap_fig = plt.figure(figsize=(12,6))
-fig = sns.heatmap(patients[['age',
+fig9 = plt.figure(figsize=(12,6))
+sns.heatmap(patients[['age',
  'bmi',
  'elective_surgery',
  'ethnicity',
@@ -184,15 +202,58 @@ fig = sns.heatmap(patients[['age',
  'icu_type',
  'pre_icu_los_days',
  'weight','diabetes_mellitus']].corr(),annot=True,cmap="viridis")
-st.pyplot(heatmap_fig)
 
-heatmap_fig1 = plt.figure(figsize=(20,10))
+
+fig10 = plt.figure(figsize=(20,10))
 sns.heatmap(patients[['apache_post_operative',
        'arf_apache', 'gcs_eyes_apache', 'gcs_motor_apache',
        'gcs_unable_apache', 'gcs_verbal_apache', 'heart_rate_apache',
        'intubated_apache', 'map_apache', 'resprate_apache', 'temp_apache',
        'ventilated_apache']].corr(),annot=True,cmap="viridis")
 
-st.pyplot(heatmap_fig1)
+
+container1 = st.container()
+col1, col2 = st.columns(2)
+
+with container1:
+    with col1:
+        fig1
+    with col2:
+        fig4
+
+st.plotly_chart(fig5)
+
+container2 = st.container()
+col3, col4 = st.columns(2)
+
+with container2:
+    with col3:
+        st.bar_chart(diabetics)
+    with col4:
+        fig6
 
 
+
+container3 = st.container()
+col5, col6 = st.columns(2)
+
+with container2:
+    with col3:
+        fig7
+    with col4:
+        fig8
+
+container4 = st.container()
+col7, col8 = st.columns(2)
+
+with container2:
+    with col3:
+        fig9
+    with col4:
+        fig10
+
+
+
+
+
+  
