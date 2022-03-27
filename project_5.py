@@ -139,7 +139,7 @@ explode = (0, 0.1, 0, 0, 0,0,0,0)
 fig6, ax6 = plt.subplots()
 ax6.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
         shadow=True, startangle=40)
-ax6.title.set_text('Different Diseases per Ethnictity')
+ax6.title.set_text('Different Diseases per Ethnictity {}'.format(bar_axis1.capitalize()))
 ax6.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 
