@@ -44,7 +44,7 @@ apache3_hospital.rename({'hospital_id': 'number of hospitals'}, axis=1, inplace=
 apache3_hospital.sort_values(by="number of hospitals",inplace=True) 
 
 st.header("The total of hospital per apache_3j_bodysystem")
-fig2 = plt.figure(figsize=(20,10))   
+fig2 = plt.figure(figsize=(12,10))   
 st.bar_chart(apache3_hospital)
 
 
