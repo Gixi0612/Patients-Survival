@@ -77,7 +77,7 @@ else:
   sizes =b1['quantities']
   explode = (0, 0.1, 0, 0, 0)
   fig4, ax4 = plt.subplots()
-  ax4.title.set_text('Different ICU Admit Sources Per Hospital_ID  {}'.format(bar_axis.capitalize()))
+  ax4.title.set_text('Different ICU Admit Sources Per Hospital_ID  {}'.format(bar_axis))
   ax4.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
             shadow=True, startangle=40)
   ax4.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
