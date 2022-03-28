@@ -1,1 +1,1 @@
-https://project5-patients-survivals.herokuapp.com/
+https://patients-survivals.herokuapp.com/
